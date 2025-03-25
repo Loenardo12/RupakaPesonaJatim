@@ -5,10 +5,11 @@
  * @format
  */
 
-import React from 'react';
-import {ScrollView, StyleSheet,  Text, View, Image, ImageBackground, TextInput, Pressable} from 'react-native';
-import {Element3, Receipt21, Clock, Message, SearchNormal} from 'iconsax-react-native';
-import { fontType, colors } from './src/theme';
+import React, { useState } from 'react';
+import {ScrollView, StyleSheet,  Text, View, Image, ImageBackground, TextInput, Pressable, TouchableOpacity, FlatList} from 'react-native';
+import {Element3, Receipt21, Clock, Message, SearchNormal, Notification} from 'iconsax-react-native';import { fontType, colors } from './src/theme';
+import { CategoryList, BlogList } from './src/data';
+import {ListHorizontal, ItemSmall} from './src/components';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -153,302 +154,17 @@ const searchBar = StyleSheet.create({
 });
 
 const ListBlog = () => {
+  const horizontalData = BlogList.slice(0, 5);
+  const verticalData = BlogList.slice(5);
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.listBlog}>
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          contentContainerStyle={{gap: 15}}>
-          <View style={{...itemHorizontal.cardItem, marginLeft: 24}}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{borderRadius: 15}}
-              source={{
-                uri: 'https://nusantara-news.co/wp-content/uploads/2023/09/64b3b11f7c6cc009671238.jpeg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>Reog Ponorogo</Text>
-                  <Text style={itemHorizontal.cardText}>Semi Tari</Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21
-                      color={colors.white()}
-                      variant="Linear"
-                      size={20}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{borderRadius: 15}}
-              source={{
-                uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Traditional_indonesian_instruments02.jpg/640px-Traditional_indonesian_instruments02.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>Gamelan</Text>
-                  <Text style={itemHorizontal.cardText}>Musik Tradisional</Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21
-                      color={colors.white()}
-                      variant="Linear"
-                      size={20}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{borderRadius: 15}}
-              source={{
-                uri: 'https://i.pinimg.com/736x/ce/21/12/ce211258781437c72aea467270963523.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>Batik</Text>
-                  <Text style={itemHorizontal.cardText}>Kerajinan</Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21
-                      color={colors.white()}
-                      variant="Linear"
-                      size={20}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{borderRadius: 15}}
-              source={{
-                uri: 'https://student-activity.binus.ac.id/bslc/wp-content/uploads/sites/49/2021/12/Picture1.jpg',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>Wayang</Text>
-                  <Text style={itemHorizontal.cardText}>Wayang</Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21
-                      color={colors.white()}
-                      variant="Linear"
-                      size={20}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-          <View style={{...itemHorizontal.cardItem,marginRight: 24}}>
-            <ImageBackground
-              style={itemHorizontal.cardImage}
-              resizeMode="cover"
-              imageStyle={{borderRadius: 15}}
-              source={{
-                uri: 'https://cnc-magazine.oramiland.com/parenting/images/Makanan_khas_Jawa_Timur_Rawon.width-500.format-webp.webp',
-              }}>
-              <View style={itemHorizontal.cardContent}>
-                <View style={itemHorizontal.cardInfo}>
-                  <Text style={itemHorizontal.cardTitle}>Rawon</Text>
-                  <Text style={itemHorizontal.cardText}>
-                    Kuliner Tradisional
-                  </Text>
-                </View>
-                <View>
-                  <View style={itemHorizontal.cardIcon}>
-                    <Receipt21
-                      color={colors.white()}
-                      variant="Linear"
-                      size={20}
-                    />
-                  </View>
-                </View>
-              </View>
-            </ImageBackground>
-          </View>
-              </ScrollView>
-        <View style={itemVertical.listCard}>
-          <View style={itemVertical.cardItem}>
-            <Image
-              style={itemVertical.cardImage}
-              source={{
-                uri: 'https://asset.kompas.com/crops/KOblroSeD5UDhVb9IlvBs1-fF4A=/11x0:881x580/750x500/data/photo/2021/09/07/61375373e7531.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 5, width: '70%'}}>
-                  <Text style={itemVertical.cardCategory}>Seni Tari</Text>
-                  <Text style={itemVertical.cardTitle}>Tari Remo</Text>
-                </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Jawa Timur</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>89</Text>
-              </View>
-            </View>
-          </View>
-          <View style={itemVertical.cardItem}>
-            <Image
-              style={itemVertical.cardImage}
-              source={{
-                uri: 'https://bobobox.com/blog/wp-content//uploads/2024/09/angklung-jpg.webp',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 5, width: '70%'}}>
-                  <Text style={itemVertical.cardCategory}>
-                    Musik Tradisional
-                  </Text>
-                  <Text style={itemVertical.cardTitle}>Angklung</Text>
-                </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Jawa Timur</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>89</Text>
-              </View>
-            </View>
-          </View>
-          <View style={itemVertical.cardItem}>
-            <Image
-              style={itemVertical.cardImage}
-              source={{
-                uri: 'https://eksotikaindonesia.com/wp-content/uploads/2020/02/topeng-malanangan-seni-tradisi-dari-malang-jawa-timur.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 5, width: '70%'}}>
-                  <Text style={itemVertical.cardCategory}>Kerajinan</Text>
-                  <Text style={itemVertical.cardTitle}>Topeng Malangan</Text>
-                </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Jawa Timur</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>89</Text>
-              </View>
-            </View>
-          </View>
-          <View style={itemVertical.cardItem}>
-            <Image
-              style={itemVertical.cardImage}
-              source={{
-                uri: 'https://www.situsjatim.com/webmin/images/posts/1/2024/2024-09-01/5cfff25f837602656d772f63a68d48f2_1.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 5, width: '70%'}}>
-                  <Text style={itemVertical.cardCategory}>Wayang & Sastra</Text>
-                  <Text style={itemVertical.cardTitle}>Ludruk</Text>
-                </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Jawa Timur</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>89</Text>
-              </View>
-            </View>
-          </View>
-          <View style={itemVertical.cardItem}>
-            <Image
-              style={itemVertical.cardImage}
-              source={{
-                uri: 'https://www.masakapahariini.com/wp-content/uploads/2022/08/makanan-khas-jawa-timur-lontong-kupang-500x300.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 5, width: '70%'}}>
-                  <Text style={itemVertical.cardCategory}>Kuliner Tradisional </Text>
-                  <Text style={itemVertical.cardTitle}>
-                    Kupang
-                  </Text>
-                </View>
-                <Receipt21
-                  color={colors.grey(0.6)}
-                  variant="Linear"
-                  size={20}
-                />
-              </View>
-              <View style={itemVertical.cardInfo}>
-                <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Jawa Timur</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>89</Text>
-              </View>
-            </View>
-          </View>
-                  </View>
+        <ListHorizontal data={horizontalData} />
+        <View style={styles.listCard}>
+          {verticalData.map((item, index) => (
+            <ItemSmall item={item} key={index} />
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -541,4 +257,38 @@ const itemHorizontal = StyleSheet.create({
   },
 });
 
+const ItemCategory = ({item, onPress, color}) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={category.item}>
+        <Text style={{...category.title, color}}>{item.categoryName}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const FlatListCategory = () => {
+  const [selected, setSelected] = useState(1);
+  const renderItem = ({item}) => {
+    const color = item.id === selected ? colors.blue() : colors.grey();
+    return (
+      <ItemCategory
+        item={item}
+        onPress={() => setSelected(item.id)}
+        color={color}
+      />
+    );
+  };
+  return (
+    <FlatList
+      data={CategoryList}
+      keyExtractor={item => item.id}
+      renderItem={item => renderItem({...item})}
+      ItemSeparatorComponent={() => <View style={{width: 10}} />}
+      contentContainerStyle={{paddingHorizontal: 24}}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+    />
+  );
+};
 
