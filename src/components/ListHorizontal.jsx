@@ -40,16 +40,17 @@ const ListHorizontal = ({data}) => {
       setBookmark([...bookmark, itemId]);
     }
   };
-  const renderItem = ({item}) => {
-    variant = bookmark.includes(item.id) ? 'Bold' : 'Linear';
-    return (
-      <ItemHorizontal
-        item={item}
-        variant={variant}
-        onPress={() => toggleBookmark(item.id)}
-      />
-    );
-  };
+  const renderItem = ({ item }) => {
+  const variant = bookmark.includes(item.id) ? 'Bold' : 'Linear';
+  return (
+    <ItemHorizontal
+      item={item}
+      variant={variant}
+      onPress={() => toggleBookmark(item.id)}
+    />
+  );
+};
+
   return (
     <FlatList
       data={data}
@@ -63,6 +64,8 @@ const ListHorizontal = ({data}) => {
   );
 };
 export default ListHorizontal;
+
+
 const itemHorizontal = StyleSheet.create({
   cardItem: {
     width: 280,
