@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -9,13 +9,13 @@ import {
   TouchableOpacity,
   FlatList,
   useColorScheme,
+  Animated,
 } from 'react-native';
 import {Element3, SearchNormal} from 'iconsax-react-native';
 
 import {fontType, colors} from '../../theme';
 import {ListHorizontal, ItemSmall} from '../../components';
 import {CategoryList, BlogList} from '../../data';
-
 
 function Section({children, title}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,19 +44,39 @@ function Section({children, title}) {
 }
 
 export default function Home() {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
+      <Animated.View
+        style={[styles.header, {transform: [{translateY: slideAnim}]}]}>
         <Text style={styles.title}>Rupaka Pesona Jatim</Text>
         <Element3 color={colors.black()} variant="Linear" size={24} />
-      </View>
-      <View style={searchBar.container}>
+      </Animated.View>
+      <Animated.View
+        style={[searchBar.container, {transform: [{translateY: slideAnim}]}]}>
         <TextInput style={searchBar.input} placeholder="Cari disini" />
         <Pressable style={searchBar.button}>
           <SearchNormal size={20} color={colors.white()} />
         </Pressable>
-      </View>
-      <View style={styles.listCategory}>
+      </Animated.View>
+      <Animated.View style={[styles.listCategory, {opacity: fadeAnim}]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={{...category.item, marginLeft: 24}}>
             <Text style={{...category.title, color: colors.blue()}}>
@@ -76,11 +96,13 @@ export default function Home() {
             <Text style={category.title}>Kuliner Tradisional</Text>
           </View>
         </ScrollView>
-      </View>
+      </Animated.View>
       <ListBlog />
-    </View>
+    </Animated.View>
   );
 }
+
+// Styles and other components remain the same...
 
 const styles = StyleSheet.create({
   container: {

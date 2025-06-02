@@ -6,22 +6,18 @@ import {
   Image,
   TouchableOpacity,
   useColorScheme,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Setting2, Edit} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 
-
 const ProfileScreen = () => {
-  const scheme = useColorScheme();
   const navigation = useNavigation();
-  return (
-    <TouchableOpacity
-      style={styles.floatingButton}
-      onPress={() => navigation.navigate('AddBlog')}>
-      <Edit color={colors.white()} variant="Linear" size={20} />
 
-      <View style={styles.container}>
+  return (
+    <View style={styles.screen}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerBackground} />
 
         <Image
@@ -75,42 +71,33 @@ const ProfileScreen = () => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
-    </TouchableOpacity>
+      </ScrollView>
+
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('AddBlog')}>
+        <Edit color="#FFFFFF" variant="Linear" size={22} />
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: '#F5F5DC',
-    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  container: {
     paddingTop: 40,
+    alignItems: 'center',
+    paddingBottom: 100, // agar tidak tertutup tombol
   },
-  floatingButton: {
-    backgroundColor: '#8DD8FF',
-    padding: 15,
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    borderRadius: 10,
-    shadowColor: '#8DD8FF',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-
-    elevation: 8,
-  },
-
   headerBackground: {
     position: 'absolute',
     top: 0,
     width: '100%',
     height: 180,
-    backgroundColor: '#EFD9B4',
+    backgroundColor: '#FFD8A9',
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
     zIndex: -1,
@@ -120,82 +107,95 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginBottom: 10,
-    borderWidth: 2,
-    borderColor: '#FFF8DC',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: {width: 0, height: 4},
-    shadowRadius: 6,
-    elevation: 5,
+    borderWidth: 3,
+    borderColor: '#fff',
+    backgroundColor: '#E0E0E0',
   },
   name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#A52A2A',
-    marginBottom: 6,
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#8B0000',
+    marginBottom: 4,
   },
   role: {
-    fontSize: 15,
-    color: '#4A3228',
-    marginBottom: 20,
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 16,
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     width: '90%',
     marginBottom: 20,
-    backgroundColor: '#FFFFFF',
-    padding: 15,
+    backgroundColor: '#FFF',
+    paddingVertical: 16,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
   statBox: {
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#A52A2A',
+    color: '#8B0000',
   },
   statLabel: {
-    fontSize: 14,
-    color: '#4A3228',
+    fontSize: 13,
+    color: '#666',
+    letterSpacing: 0.5,
   },
   section: {
     width: '90%',
-    marginTop: 20,
-    backgroundColor: '#FFF8DC',
-    borderRadius: 12,
-    padding: 15,
+    marginTop: 16,
+    backgroundColor: '#FFF7E6',
+    borderRadius: 16,
+    padding: 16,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 5,
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: 3,
+    elevation: 1,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#4A3228',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   menuItem: {
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#D3D3B8',
+    borderBottomColor: '#E0D6C2',
   },
   menuContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   menuText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#4A3228',
+  },
+  floatingButton: {
+    backgroundColor: '#007AFF',
+    padding: 14,
+    position: 'absolute',
+    bottom: 24,
+    right: 20,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 6,
   },
 });
 
