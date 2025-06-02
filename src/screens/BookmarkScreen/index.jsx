@@ -12,7 +12,8 @@ const dummyBookmarks = [
   {
     id: '1',
     title: 'Tari Reog Ponorogo',
-    image: 'https://source.unsplash.com/featured/?reog,ponorogo',
+    image:
+      'https://nusantara-news.co/wp-content/uploads/2023/09/64b3b11f7c6cc009671238.jpeg',
     category: 'Seni Tari',
   },
   {
