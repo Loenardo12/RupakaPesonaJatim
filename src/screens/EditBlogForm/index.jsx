@@ -1,15 +1,24 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Modal} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+  Modal,
+} from 'react-native';
 import {ArrowLeft} from 'iconsax-react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {fontType, colors} from '../../theme';
 import axios from 'axios';
 
+const EditBlogForm = ({route}) => {
+  // ambil parameter blogId
+  const {blogId} = route.params;
 
-const AddBlogForm = () => {
-
-  const [loading, setLoading] = useState(false);
-  
   const dataCategory = [
     {id: 1, name: 'Food'},
     {id: 2, name: 'Sports'},
@@ -20,6 +29,7 @@ const AddBlogForm = () => {
     {id: 7, name: 'Music'},
     {id: 8, name: 'Car'},
   ];
+
   const [blogData, setBlogData] = useState({
     title: '',
     content: '',
@@ -27,46 +37,75 @@ const AddBlogForm = () => {
     totalLikes: 0,
     totalComments: 0,
   });
+
   const handleChange = (key, value) => {
     setBlogData({
       ...blogData,
       [key]: value,
     });
   };
-  
-const handleUpload = async () => {
-  setLoading(true);
-  try {
-    // gunakan metode POST untuk menambahkan blog baru
-    const response = await axios.post(
-      'https://6819c9221ac1155635065a8e.mockapi.io/api/blog',
-      {
-        title: blogData.title,
-        category: blogData.category,
-        image,
-        content: blogData.content,
-        totalComments: blogData.totalComments,
-        totalLikes: blogData.totalLikes,
-        createdAt: new Date(),
-      },
-    );
-    // jika status response 201 (Created) "Sukses"
-    if (response.status == 201) {
-      // kembali ke layar sebelumnya (Profile)
-      navigation.goBack();
-    }
-  } catch (e) {
-    // tampilkan error
-    Alert.alert('Gagal Mengunggah Blog', `Status: ${e.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
 
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
+
+  // state status apakah sedang loading/tidak
+  const [loading, setLoading] = useState(true);
+
+  // fungsi untuk mengambil data blog berdasarkan id
+  const getBlogById = async () => {
+    setLoading(true);
+    try {
+      // ambil data blog berdasarkan ID dengan metode GET
+      const response = await axios.get(
+        `https://6819c9221ac1155635065a8e.mockapi.io/api/blog/${blogId}`,
+      );
+      // atur state blog data menjadi data blog yang di dapatkan
+      // dari response API
+      setBlogData({
+        title: response.data.title,
+        content: response.data.content,
+        category: {
+          id: response.data.category.id,
+          name: response.data.category.name,
+        },
+      });
+      // atur data gambar
+      setImage(response.data.image);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getBlogById();
+  }, [blogId]);
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      // update spesifik data blog (ID) menggunakan metode PUT
+      const response = await axios.put(
+        `https://6819c9221ac1155635065a8e.mockapi.io/api/rblog/${blogId}`,
+        {
+          title: blogData.title,
+          category: blogData.category,
+          image,
+          content: blogData.content,
+          totalComments: blogData.totalComments,
+          totalLikes: blogData.totalLikes,
+        },
+      );
+      if (response.status == 200) {
+        navigation.goBack();
+      }
+    } catch (e) {
+      Alert.alert('error', `${e.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -74,7 +113,7 @@ const handleUpload = async () => {
           <ArrowLeft color={colors.black()} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={styles.title}>Write blog</Text>
+          <Text style={styles.title}>Edit blog</Text>
         </View>
       </View>
       <ScrollView
@@ -148,21 +187,22 @@ const handleUpload = async () => {
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={handleUpload}>
-          <Text style={styles.buttonLabel}>Upload</Text>
+        <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+          <Text style={styles.buttonLabel}>Update</Text>
         </TouchableOpacity>
-
-        <Modal visible={loading} animationType="none" transparent>
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color={colors.blue()} />
-          </View>
-        </Modal>
       </View>
+
+      {/* Menampilkan status loading */}
+      <Modal visible={loading} animationType="none" transparent>
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={colors.blue()} />
+        </View>
+      </Modal>
     </View>
   );
 };
 
-export default AddBlogForm;
+export default EditBlogForm;
 
 const styles = StyleSheet.create({
   container: {
@@ -211,7 +251,6 @@ const styles = StyleSheet.create({
     fontFamily: fontType['Pjs-SemiBold'],
     color: colors.white(),
   },
-
   loadingOverlay: {
     flex: 1,
     backgroundColor: colors.black(0.4),
@@ -219,6 +258,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 const textInput = StyleSheet.create({
   borderDashed: {
     borderStyle: 'dashed',
@@ -240,6 +280,7 @@ const textInput = StyleSheet.create({
     padding: 0,
   },
 });
+
 const category = StyleSheet.create({
   title: {
     fontSize: 12,

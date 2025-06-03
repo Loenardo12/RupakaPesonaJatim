@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { AboutScreen,BookmarkScreen,DetailScreen,GalleryScreen,Home,Onboarding,Discover,Profile,AddBlogForm,} from '../screens';
+import { AboutScreen,BookmarkScreen,DetailScreen,GalleryScreen,Home,EditBlogForm,Onboarding,Discover,Profile,AddBlogForm,} from '../screens';
 import {Home2,LocationDiscover,Receipt21,ProfileCircle,} from 'iconsax-react-native';
 import {fontType, colors} from '../theme';
 
@@ -86,6 +86,19 @@ function MainApp() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="EditBlog"
+        component={EditBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+
     </Tab.Navigator>
   );
 }
@@ -98,6 +111,19 @@ const Router = () => {
         component={MainApp}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="EditBlog"
+        component={EditBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+
       <Stack.Screen
         name="BlogDetail"
         component={DetailScreen}

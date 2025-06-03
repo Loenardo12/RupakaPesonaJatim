@@ -2,10 +2,9 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import {Receipt21, Clock, Message} from 'iconsax-react-native';
 import React from 'react';
-import {fontType, colors} from '../theme';
 import {useNavigation} from '@react-navigation/native';
-
-
+import {fontType, colors} from '../theme';
+import {formatDate} from '../utils/formatDate';
 
 const ItemSmall = ({item}) => {
   const navigation = useNavigation();
@@ -16,25 +15,29 @@ const ItemSmall = ({item}) => {
       <FastImage
         style={styles.cardImage}
         source={{
-          uri: item.image,
+          uri: item?.image,
           headers: {Authorization: 'someAuthToken'},
           priority: FastImage.priority.high,
         }}
         resizeMode={FastImage.resizeMode.cover}
       />
       <View style={styles.cardContent}>
-        <View style={styles.cardHeader}>
-          <View style={styles.cardTextContainer}>
-            <Text style={styles.cardCategory}>{item.category}</Text>
-            <Text style={styles.cardTitle}>{item.title}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 30,
+          }}>
+          <View style={{gap: 5, flex: 1}}>
+            <Text style={styles.cardCategory}>{item.category?.name}</Text>
+            <Text style={styles.cardTitle}>{item?.title}</Text>
           </View>
-          <Receipt21 color={colors.grey(0.6)} variant="Linear" size={24} />
+          <Receipt21 color={colors.grey(0.6)} variant="Linear" size={20} />
         </View>
         <View style={styles.cardInfo}>
-          <Clock size={14} variant="Linear" color={colors.grey(0.6)} />
-          <Text style={styles.cardText}>{item.placeofOrigin}</Text>
-          <Message size={14} variant="Linear" color={colors.grey(0.6)} />
-          <Text style={styles.cardText}>{item.totalComments}</Text>
+          <Clock size={10} variant="Linear" color={colors.grey(0.6)} />
+          <Text style={styles.cardText}>{formatDate(item?.createdAt)}</Text>
+          <Message size={10} variant="Linear" color={colors.grey(0.6)} />
+          <Text style={styles.cardText}>{item?.totalComments}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -58,7 +61,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 16,
     elevation: 4,
-  
   },
   cardCategory: {
     color: colors.blue(),

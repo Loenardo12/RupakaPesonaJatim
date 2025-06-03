@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Setting2, Edit} from 'iconsax-react-native';
-import {useNavigation} from '@react-navigation/native';
+import FastImage from '@d11/react-native-fast-image';
+import {ProfileData} from '../../data';
+import {ItemSmall} from '../../components';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {fontType, colors} from '../../theme';
+import {formatNumber} from '../../utils/formatNumber';
+import axios from 'axios';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();

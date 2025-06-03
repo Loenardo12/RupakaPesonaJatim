@@ -7,4 +7,5 @@ import GalleryScreen from './GalleryScreen';
 import Onboarding from './Onboarding';
 import Discover from './Discover';
 import AddBlogForm from './AddBlogForm';
-export {Home, AboutScreen, BookmarkScreen, DetailScreen, GalleryScreen, Onboarding, Discover, Profile, AddBlogForm};
+import EditBlogForm from './EditBlogForm';
+export {Home, AboutScreen, BookmarkScreen, DetailScreen, GalleryScreen, Onboarding, Discover, Profile, AddBlogForm,EditBlogForm};
