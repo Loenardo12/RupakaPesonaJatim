@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "960456473357",
+    "project_id": "rupakapesonajatim",
+    "storage_bucket": "rupakapesonajatim.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960456473357:android:5bf2c0ce64470c9ad68e44",
+        "android_client_info": {
+          "package_name": "com.rupakapesonajatim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1IvP29yqyT3qz8DPV1P17QFCYjCQr6cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

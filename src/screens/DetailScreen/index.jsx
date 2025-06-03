@@ -2,12 +2,12 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   TouchableOpacity,
   Animated,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   ArrowLeft,
   Like1,
@@ -16,79 +16,76 @@ import {
   Share,
   More,
 } from 'iconsax-react-native';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 import {fontType, colors} from '../../theme';
+import {doc, getFirestore, onSnapshot} from '@react-native-firebase/firestore';
 import {formatNumber} from '../../utils/formatNumber';
 import {formatDate} from '../../utils/formatDate';
-import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
 
 const BlogDetail = ({route}) => {
   const {blogId} = route.params;
-
+  const navigation = useNavigation();
   const [iconStates, setIconStates] = useState({
     liked: {variant: 'Linear', color: colors.grey(0.6)},
     bookmarked: {variant: 'Linear', color: colors.grey(0.6)},
   });
-
-  const [selectedBlog, setSelectedBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [selectedBlog, setSelectedBlog] = useState(null);
   const actionSheetRef = useRef(null);
-
   const openActionSheet = () => {
     actionSheetRef.current?.show();
   };
-
   const closeActionSheet = () => {
     actionSheetRef.current?.hide();
   };
+  useEffect(() => {
+    const db = getFirestore();
+    const blogRef = doc(db, 'blog', blogId);
 
-  useFocusEffect(
-    useCallback(() => {
-      getBlogById();
-    }, [blogId]),
-  );
+    const unsub = onSnapshot(blogRef, documentSnapshot => {
+      const blogData = documentSnapshot.data();
+      if (blogData) {
+        console.log('Blog data: ', blogData);
+        setSelectedBlog(blogData);
+      } else {
+        console.log(`Blog with ID ${blogId} not found.`);
+      }
+    });
 
-  const getBlogById = async () => {
-    try {
-      // ambil data blog berdasarkan spesifik ID dengan metode GET
-      const response = await axios.get(
-        `https://6819c9221ac1155635065a8e.mockapi.io/api/blog/${blogId}`,
-      );
-      // atur state blog berdasarkan response dari API
-      setSelectedBlog(response.data);
-      setLoading(false);
-    } catch (error) {
-      Alert.alert('error', `${error.Message}`);
-    }
-  };
-
+    setLoading(false);
+    return () => unsub();
+  }, [blogId]);
   const navigateEdit = () => {
-    navigation.navigate('EditBlog', {blogId});
     closeActionSheet();
+    navigation.navigate('EditBlog', {blogId});
   };
   const handleDelete = async () => {
+    closeActionSheet();
     setLoading(true);
     try {
-      // hapus data blog dengan spesifik ID dengan metode DELETE
-      const response = await axios.delete(
-        `https://6819c9221ac1155635065a8e.mockapi.io/api/blog/${blogId}`,
-      );
-      if (response.status == 200) {
-        closeActionSheet();
-        navigation.goBack();
+      const db = getFirestore();
+      const blogRef = doc(db, 'blog', blogId);
+      await blogRef.delete();
+
+      if (selectedBlog?.image) {
+        await fetch(
+          `https://backend-file-praktikum.vercel.app/delete/${selectedBlog.image}`,
+          {
+            method: 'POST',
+          },
+        );
       }
-    } catch (error) {
-      Alert.alert('Gagal Menhapus Blog', `${error.Message}`);
-    } finally {
+      console.log('Blog deleted!');
+      closeActionSheet();
+      setSelectedBlog(null);
       setLoading(false);
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
     }
   };
-
-  const navigation = useNavigation();
-
   const scrollY = useRef(new Animated.Value(0)).current;
   const diffClampY = Animated.diffClamp(scrollY, 0, 52);
   const headerY = diffClampY.interpolate({
@@ -206,6 +203,7 @@ const BlogDetail = ({route}) => {
         indicatorStyle={{
           width: 100,
         }}
+        gestureEnabled={true}
         defaultOverlayOpacity={0.3}>
         <TouchableOpacity
           style={{

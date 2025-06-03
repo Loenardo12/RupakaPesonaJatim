@@ -1,16 +1,18 @@
-import {StyleSheet, Text, View, ScrollView, FlatList,ActivityIndicator, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, FlatList,ActivityIndicator, TouchableOpacity,RefreshControl} from 'react-native';
 import {BlogList} from '../../data';
 import {ItemSmall} from '../../components';
 import {SearchNormal1} from 'iconsax-react-native';
 import {fontType, colors} from '../../theme';
-
-import {Edit, Setting2} from 'iconsax-react-native';
-import React, {useState, useCallback} from 'react';
-import FastImage from '@d11/react-native-fast-image';
-import {ProfileData} from '../../data';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {formatNumber} from '../../utils/formatNumber';
 import axios from 'axios';
+import { Edit, Setting2 } from 'iconsax-react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import FastImage from '@d11/react-native-fast-image';
+import { ProfileData } from '../../data';
+import { collection, getFirestore, onSnapshot } from '@react-native-firebase/firestore';
+
+
 
 const data = [
   {id: 1, label: 'react'},
@@ -50,37 +52,55 @@ const Discover = () => {
   // state blod data untuk menyimpan list (array) dari blog
   const [blogData, setBlogData] = useState([]);
   // status untuk menyimpan status refreshing
-  const [refreshing, setRefreshing] = useState(false);
   
-  const getDataBlog = async () => {
-    try {
-      // ambil data dari API dengan metode GET
-      const response = await axios.get(
-        'https://6819c9221ac1155635065a8e.mockapi.io/api/blog',
-      );
-      // atur state blogData sesuai dengan data yang
-      // di dapatkan dari API
-      setBlogData(response.data);
-      // atur loading menjadi false
-      setLoading(false)
-    } catch (error) {
-        console.error(error);
-    }
-  };
+  
+  useFocusEffect(
+    useCallback(() => {
+        }, [])
+  );
+
+
+
+  
+  const [refreshing, setRefreshing] = useState(false);
+  useEffect(() => {
+    const db = getFirestore();
+    const blogRef = collection(db, 'blog');
+
+    const subscriber = onSnapshot(blogRef, (snapshot) => {
+      const blogs = [];
+      snapshot.forEach((doc) => {
+        blogs.push({
+          ...doc.data(),
+          id: doc.id,
+        });
+      });
+      setBlogData(blogs);
+      setLoading(false);
+    });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataBlog()
+      const db = getFirestore();
+      const blogRef = collection(db, 'blog');
+      onSnapshot(blogRef, (snapshot) => {
+        const blogs = [];
+        snapshot.forEach((doc) => {
+          blogs.push({
+            ...doc.data(),
+            id: doc.id,
+          });
+        });
+        setBlogData(blogs);
+        setLoading(false);
+      });
+
       setRefreshing(false);
     }, 1500);
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, [])
-  );
 
   return (
     <View style={styles.container}>
@@ -94,21 +114,31 @@ const Discover = () => {
         <Text style={recent.text}>Recent Search</Text>
         <FlatListRecent />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          gap: 10,
+          paddingVertical: 20,
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        
         <View style={{paddingVertical: 10, gap: 10}}>
-          {/* Tampilkan Blog Data */}
           {loading ? (
             <ActivityIndicator size={'large'} color={colors.blue()} />
           ) : (
             blogData.map((item, index) => <ItemSmall item={item} key={index} />)
           )}
         </View>
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => navigation.navigate('AddBlog')}>
-          <Edit color={colors.white()} variant="Linear" size={20} />
-        </TouchableOpacity>
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('AddBlog')}>
+        <Edit color={colors.white()} variant="Linear" size={20} />
+      </TouchableOpacity>
     </View>
   );
 };
